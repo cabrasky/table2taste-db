@@ -124,6 +124,8 @@ CREATE TABLE IF NOT EXISTS menu_item_translation (
     translation_id INT NOT NULL,
     PRIMARY KEY (menu_item_id, translation_id),
     FOREIGN KEY (menu_item_id) REFERENCES menu_item (id) ON DELETE CASCADE,
+    PRIMARY KEY (menu_item_id, translation_id),
+    FOREIGN KEY (menu_item_id) REFERENCES menu_item (id) ON DELETE CASCADE,
     FOREIGN KEY (translation_id) REFERENCES translation (id) ON DELETE CASCADE
 );
 
