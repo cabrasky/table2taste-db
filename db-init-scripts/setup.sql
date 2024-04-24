@@ -64,7 +64,6 @@ CREATE TABLE IF NOT EXISTS restaurant_info (
 -- Create the "category" table for storing category information
 CREATE TABLE IF NOT EXISTS category (
     id TEXT PRIMARY KEY,
-    name TEXT,
     media_url TEXT,
     parent_category_id TEXT,
     FOREIGN KEY (parent_category_id) references category (id) on delete set null
