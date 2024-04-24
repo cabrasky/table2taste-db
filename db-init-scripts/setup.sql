@@ -61,19 +61,22 @@ CREATE TABLE IF NOT EXISTS restaurant_info (
         DEFAULT
 );
 
--- Create the "menu_item" table for storing menu Item information
-CREATE TABLE IF NOT EXISTS menu_item (
-    id TEXT PRIMARY KEY,
-    price DECIMAL,
-    preparation_time INT,
-    media_url TEXT
-);
-
 -- Create the "category" table for storing category information
 CREATE TABLE IF NOT EXISTS category (
     id TEXT PRIMARY KEY,
     name TEXT,
-    media_url TEXT
+    media_url TEXT,
+    parent_category_id TEXT,
+    FOREIGN KEY (parent_category_id) references category (id) on delete set null
+);
+
+-- Create the "menu_item" table for storing menu Item information
+CREATE TABLE IF NOT EXISTS menu_item (
+    id TEXT PRIMARY KEY,
+    price DECIMAL,
+    media_url TEXT,
+    category_id TEXT,
+    FOREIGN KEY (category_id) references category (id) on delete set null
 );
 
 -- Create the "allergen" table for storing allergen information
@@ -98,17 +101,6 @@ CREATE TABLE IF NOT EXISTS translation (
     FOREIGN KEY (language_id) REFERENCES language (id) ON DELETE CASCADE
 );
 
--- Create the "menu_item_category" table for many-to-many relationship between menu items and categories
-CREATE TABLE IF NOT EXISTS menu_item_category (
-    menu_item_id TEXT NOT NULL,
-    category_id TEXT DEFAULT NULL,
-    PRIMARY KEY (menu_item_id, category_id),
-    FOREIGN KEY (menu_item_id) REFERENCES menu_item (id) ON DELETE CASCADE,
-    FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE
-    SET
-        DEFAULT
-);
-
 -- Create the "menu_item_allergen" table for many-to-many relationship between menu items and allergens
 CREATE TABLE IF NOT EXISTS menu_item_allergen (
     menu_item_id TEXT NOT NULL,
@@ -122,8 +114,6 @@ CREATE TABLE IF NOT EXISTS menu_item_allergen (
 CREATE TABLE IF NOT EXISTS menu_item_translation (
     menu_item_id TEXT NOT NULL,
     translation_id INT NOT NULL,
-    PRIMARY KEY (menu_item_id, translation_id),
-    FOREIGN KEY (menu_item_id) REFERENCES menu_item (id) ON DELETE CASCADE,
     PRIMARY KEY (menu_item_id, translation_id),
     FOREIGN KEY (menu_item_id) REFERENCES menu_item (id) ON DELETE CASCADE,
     FOREIGN KEY (translation_id) REFERENCES translation (id) ON DELETE CASCADE
@@ -238,9 +228,7 @@ CREATE TABLE IF NOT EXISTS "order" (
     id SERIAL PRIMARY KEY,
     service_id INT NOT NULL,
     created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    user_id INT,
-    FOREIGN KEY (service_id) REFERENCES service (id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES "user" (id)
+    FOREIGN KEY (service_id) REFERENCES service (id) ON DELETE CASCADE
 );
 
 -- Create the "order_menu_item" table for associating menu items with orders
