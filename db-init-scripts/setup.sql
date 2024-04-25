@@ -155,7 +155,8 @@ CREATE TABLE IF NOT EXISTS app_translation (
 -- Create the "group" table for managing user groups and their privileges
 CREATE TABLE IF NOT EXISTS "group" (
     id TEXT PRIMARY KEY,
-    privileges JSONB -- Storing privileges as JSONB for flexibility
+    privileges JSONB, -- Storing privileges as JSONB for flexibility
+    color TEXT -- Column to save color
 );
 
 -- Create the "user" table for managing users
@@ -183,12 +184,12 @@ CREATE TABLE IF NOT EXISTS group_translation (
     FOREIGN KEY (translation_id) REFERENCES translation (id) ON DELETE CASCADE
 );
 
--- Inserting data for the admin and waiter groups
-INSERT INTO "group" (id, privileges) 
+-- Inserting data for the admin, waiter, and guest groups along with their colors
+INSERT INTO "group" (id, privileges, color) 
 VALUES 
-    ('admin', '{"manage_users": true, "manage_orders": true, "manage_menus": true}'),
-    ('waiter', '{"manage_orders": true}'),
-    ('guest', '{"view_menus": true, "place_orders": true}');
+    ('admin', '{"manage_users": true, "manage_orders": true, "manage_menus": true}', '#ff0000'), -- Red
+    ('waiter', '{"manage_orders": true}', '#00ff00'), -- Green
+    ('guest', '{"view_menus": true, "place_orders": true}', '#0000ff'); -- Blue
 
 -- Inserting data for default admin and waiter users
 INSERT INTO "user" (name, photo_url) 
